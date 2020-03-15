@@ -13,16 +13,18 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     public float forwardForce = 500f;
     public float sidewaysForce = 120f;
-    public Text countText;
-    private int count;
+    public Text loseText;
+    [SerializeField] private AudioClip m_CoinSound;
+    [SerializeField] private AudioClip m_DeathSound;
+    private AudioSource m_AudioSource;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        count = 0;
-        SetCountText();
+        loseText.text = "";
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
 
     {
@@ -54,30 +56,17 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(-sidewaysForce * Time.fixedDeltaTime, 0, 0, ForceMode.VelocityChange);
         }
 
-        // Ef ýtt er á space
-        if (Input.GetKey(KeyCode.Space))
-        {
-            // Hoppar uppcon
-            rb.AddForce(0, 20, 0);
-        }
-
-        // Snúa spilari
-        if (Input.GetKey("j"))
-        {
-            Vector3 spin = new Vector3(0, 2, 0);
-            transform.Rotate(spin, Space.World);
-        }
-        if (Input.GetKey("f"))
-        {
-            Vector3 spin = new Vector3(0, -2, 0);
-            transform.Rotate(spin, Space.World);
-        }
-
         //  Ef kassi dettur
         if (rb.position.y < -1f)
         {
+            // Kemur hljóð
+            m_AudioSource.clip = m_DeathSound;
+            m_AudioSource.Play();
+            // Birtist texta
+            loseText.gameObject.SetActive(true);
+            loseText.text = "LEIK LOKIÐ!!!";
             // Kallar á föll EndGame í GameManager
-            FindObjectOfType<GameManager>().EndGame();    
+            FindObjectOfType<GameManager>().EndGame();
         }
 
     }
@@ -89,23 +78,11 @@ public class PlayerMovement : MonoBehaviour
         {
             // Gullpeningur hverfur
             collision.collider.gameObject.SetActive(false);
+            // Kemur hljóð
+            m_AudioSource.clip = m_CoinSound;
+            m_AudioSource.Play();
             // Færð stig
-            count = count + 10;
-            // Kallar í aðferðina
-            SetCountText();
+            gameManager.AddPoints(10);
         }
     }
-
-    //Aðferðin
-    void SetCountText()
-    { 
-        countText.text = count.ToString();
-        if (count >= 70)
-        {
-            // Gerir playerinn óvirkan
-            this.enabled = false;
-            gameManager.CompleteLevel();
-        }
-    }
-
 }

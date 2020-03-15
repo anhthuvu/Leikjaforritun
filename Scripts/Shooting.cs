@@ -8,10 +8,11 @@ public class Shooting : MonoBehaviour
     public float speed = 100f;
     void Update()
     {
+        // Ef ýtt á q
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("skjOtttttttta");
-
+            // Skjótta
             GameObject instBullet = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
             //GameObject instBullet = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
             Rigidbody instBulletRigidbody = instBullet.GetComponent<Rigidbody>();
