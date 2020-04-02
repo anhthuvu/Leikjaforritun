@@ -15,14 +15,17 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        loseText.text = "";
-        points = 0;
+        loseText.text = " ";
+        score.text = "0";
+        //points = 0;
     }
 
     // Reiknar og bæta við stig
     public void AddPoints(int amount)
     {
-        points = points + amount;
+        score.text = " ";
+        Debug.Log(score.text);
+        points += amount;
         Debug.Log(points);// þetta virkar
         SetCountText();
         // Vinnur ef ná í 500
@@ -34,9 +37,6 @@ public class GameManager : MonoBehaviour
         }
         if (points < 0)
         {
-        // virkar ekki
-            loseText.gameObject.SetActive(true);
-            loseText.text = "LEIK LOKIÐ!!!";
             EndGame();  
 		}
     }
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     {
         // kemur error og birtist ekki 
         score.text = points.ToString();
-        Debug.Log(score.text);
+        Debug.Log("nú ætti að standa"+score.text);
     }
     
     public void LevelComplete()
@@ -59,6 +59,10 @@ public class GameManager : MonoBehaviour
         // Restart leik ef leik lokinn
         if (gameHasEnded == false)
         {
+            score.gameObject.SetActive(false);
+            loseText.gameObject.SetActive(true);
+            loseText.text = "LEIK LOKIÐ!!!";
+            points = 0;
             gameHasEnded = true;
             Invoke("Restart", restartDelay);
         }
